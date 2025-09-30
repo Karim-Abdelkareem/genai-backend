@@ -26,21 +26,20 @@ const allowedOrigins = (process.env.CORS_ORIGINS || defaultOrigins.join(","))
   .filter(Boolean);
 app.use(
   cors({
+    origin: allowedOrigins.length ? allowedOrigins : true,
     credentials: true,
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.length === 0) return callback(null, true);
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("CORS not allowed"));
-    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
-// Optional: handle preflight explicitly
+// Ensure preflight handled with same config
 app.options(
   "*",
   cors({
-    credentials: true,
     origin: allowedOrigins.length ? allowedOrigins : true,
+    credentials: true,
   })
 );
 app.use(morgan("dev"));
