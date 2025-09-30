@@ -16,7 +16,11 @@ import userRoutes from "./routes/user.routes.js";
 const app = express();
 
 app.use(helmet());
-const allowedOrigins = (process.env.CORS_ORIGINS || "")
+const defaultOrigins = [
+  "http://localhost:3000",
+  "https://navigator-ui-one.vercel.app",
+];
+const allowedOrigins = (process.env.CORS_ORIGINS || defaultOrigins.join(","))
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
