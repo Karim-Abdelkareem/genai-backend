@@ -13,7 +13,7 @@ function setAuthCookies(res, accessToken, refreshToken) {
   const cookieOptions = {
     httpOnly: true,
     secure: isProd,
-    sameSite: isProd ? "strict" : "lax",
+    sameSite: isProd ? "none" : "lax",
     path: "/",
   };
   res.cookie("accessToken", accessToken, {
@@ -118,13 +118,11 @@ export async function refresh(req, res, next) {
   try {
     const token = req.cookies?.refreshToken || req.body.refreshToken;
     if (!token)
-      return res
-        .status(401)
-        .json({
-          success: false,
-          message: "Refresh token required",
-          data: null,
-        });
+      return res.status(401).json({
+        success: false,
+        message: "Refresh token required",
+        data: null,
+      });
     const decoded = verifyRefreshToken(token);
     const payload = { sub: decoded.sub, role: decoded.role };
     const accessToken = signAccessToken(payload);
@@ -186,13 +184,11 @@ export async function resetPassword(req, res, next) {
       passwordResetExpires: { $gt: new Date() },
     });
     if (!user)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Invalid or expired token",
-          data: null,
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired token",
+        data: null,
+      });
     user.password = await bcrypt.hash(password, 10);
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
