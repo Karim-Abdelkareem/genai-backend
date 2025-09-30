@@ -16,32 +16,14 @@ import userRoutes from "./routes/user.routes.js";
 const app = express();
 
 app.use(helmet());
-const defaultOrigins = [
-  "http://localhost:3000",
-  "https://navigator-ui-one.vercel.app",
-];
-const allowedOrigins = (process.env.CORS_ORIGINS || defaultOrigins.join(","))
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
 app.use(
   cors({
-    origin: allowedOrigins.length ? allowedOrigins : true,
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  })
-);
-// Ensure preflight handled with same config
-app.options(
-  "*",
-  cors({
-    origin: allowedOrigins.length ? allowedOrigins : true,
+    origin: ["http://localhost:5173", "https://navigator-ui-one.vercel.app"],
     credentials: true,
   })
 );
+
+app.options("*", cors());
 app.use(morgan("dev"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
