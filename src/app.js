@@ -18,12 +18,14 @@ const app = express();
 app.use(helmet());
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://navigator-ui-one.vercel.app"],
+    origin: true, // reflect request origin
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
-app.options("*", cors());
+app.options("*", cors({ origin: true, credentials: true }));
 app.use(morgan("dev"));
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
